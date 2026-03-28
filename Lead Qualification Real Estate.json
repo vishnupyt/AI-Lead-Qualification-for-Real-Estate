@@ -1,0 +1,4346 @@
+{
+  "name": "Lead Qualification Real Estate",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Lead Details Form for Real Estate",
+        "formDescription": "New Lead Registration",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "What best that describes you?",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "I want to buy"
+                  },
+                  {
+                    "option": "I want to sell"
+                  },
+                  {
+                    "option": "Just exploring options"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldType": "html",
+              "html": "<p style=\"color:#888; font-size:13px; margin-top:10px;\">\n  You will be asked relevant follow-up questions \n  on the next page based on your selection above.\n</p>"
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Next"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "ff8cd813-6b45-484d-b67d-36eeed753ae2",
+      "name": "On form submission",
+      "webhookId": "042c3b6d-6211-4f52-86aa-03e2a3b728f8"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.fields.Intent }}",
+                    "rightValue": "I want to buy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1bdd3551-c842-41b0-a6a1-d12b1a710fc9"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Buyer"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "47101aa9-6957-4262-85a0-335570a2e687",
+                    "leftValue": "={{ $json.fields.Intent }}",
+                    "rightValue": "I want to sell",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Seller"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c756b6d1-a896-4a66-9008-0f2e6fa0dd9a",
+                    "leftValue": "={{ $json.fields.Intent }}",
+                    "rightValue": "Just exploring options",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Exploring"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -16
+      ],
+      "id": "12ab599d-db91-4ba4-87e4-672d3de9a440",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Property Address",
+              "fieldName": "property_address"
+            },
+            {
+              "fieldLabel": "Property Type",
+              "fieldType": "dropdown",
+              "fieldName": "property_type",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Single-family"
+                  },
+                  {
+                    "option": "Condo"
+                  },
+                  {
+                    "option": "Townhouse"
+                  },
+                  {
+                    "option": "Multi-family"
+                  },
+                  {
+                    "option": "Land"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Why are you selling?",
+              "fieldType": "radio",
+              "fieldName": "sell_timeline",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "ASAP"
+                  },
+                  {
+                    "option": "1–3 months"
+                  },
+                  {
+                    "option": "3–6 months"
+                  },
+                  {
+                    "option": "6+ months"
+                  },
+                  {
+                    "option": "Just exploring"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Is the property currently listed?",
+              "fieldType": "radio",
+              "fieldName": "listed_status",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes, with an agent"
+                  },
+                  {
+                    "option": "Yes, with an owner"
+                  },
+                  {
+                    "option": "  No"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "How serious are you about making a move?",
+              "fieldType": "dropdown",
+              "fieldName": "seriousness",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1 - Just Researching"
+                  },
+                  {
+                    "option": "2"
+                  },
+                  {
+                    "option": "3"
+                  },
+                  {
+                    "option": "4"
+                  },
+                  {
+                    "option": "5 - Ready to take action immediately"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "What is your biggest concern right now?",
+              "fieldType": "textarea"
+            },
+            {
+              "fieldLabel": "Best time to contact you?",
+              "fieldType": "radio",
+              "fieldName": "contact_time",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Morning"
+                  },
+                  {
+                    "option": "Afternoon"
+                  },
+                  {
+                    "option": "Evening"
+                  },
+                  {
+                    "option": "Anytime"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Seller Information",
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        752,
+        0
+      ],
+      "id": "5335ab66-07ff-4710-847c-c2f6e527575b",
+      "name": "Seller Information",
+      "webhookId": "eb35628c-59c9-4ecd-9c3e-835db69730a4"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What areas are you interested in?",
+              "fieldName": "area"
+            },
+            {
+              "fieldLabel": "What is your budget range?",
+              "fieldType": "dropdown",
+              "fieldName": "budget",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under $200,000"
+                  },
+                  {
+                    "option": "$200,000 – $400,000"
+                  },
+                  {
+                    "option": "$400,000 – $700,000"
+                  },
+                  {
+                    "option": "$700,000+"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Are you pre-approved for a mortgage?",
+              "fieldType": "radio",
+              "fieldName": "pre_approved",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  },
+                  {
+                    "option": " Not yet, but ready to get pre-approved"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "When are you planning to buy?",
+              "fieldType": "radio",
+              "fieldName": "buy_timeline",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Immediately"
+                  },
+                  {
+                    "option": "1–3 months"
+                  },
+                  {
+                    "option": "3–6 months"
+                  },
+                  {
+                    "option": "6+ months"
+                  },
+                  {
+                    "option": "Just browsing"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Are you currently working with another agent?",
+              "fieldType": "radio",
+              "fieldName": "working_with_agent",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Yes"
+                  },
+                  {
+                    "option": "No"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "What is your biggest concern right now?"
+            },
+            {
+              "fieldLabel": "Best time to contact you?",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Morning"
+                  },
+                  {
+                    "option": "Afternoon"
+                  },
+                  {
+                    "option": "Evening"
+                  },
+                  {
+                    "option": "Anytime"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Buyer Information",
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        752,
+        -192
+      ],
+      "id": "ac5e1f0e-0425-4b96-bec3-005d590b550f",
+      "name": "Buyer Information",
+      "webhookId": "eb35628c-59c9-4ecd-9c3e-835db69730a4"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What are you most curious about?",
+              "fieldType": "textarea",
+              "fieldName": "curiosity"
+            },
+            {
+              "fieldLabel": "When might you be ready to make a move?",
+              "fieldType": "radio",
+              "fieldName": "future_timeline",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Within 6 months"
+                  },
+                  {
+                    "option": " 6–12 months"
+                  },
+                  {
+                    "option": "1–2 years"
+                  },
+                  {
+                    "option": "Just browsing for now"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Best time to contact you?",
+              "fieldType": "radio",
+              "fieldName": "contact_time",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Morning"
+                  },
+                  {
+                    "option": "Afternoon"
+                  },
+                  {
+                    "option": "Evening"
+                  },
+                  {
+                    "option": "Anytime"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "formTitle": "Tell Us More",
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.5,
+      "position": [
+        752,
+        176
+      ],
+      "id": "30221173-3740-471a-ad12-e046aba04653",
+      "name": "Exploring Form",
+      "webhookId": "eb35628c-59c9-4ecd-9c3e-835db69730a4"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are a real estate lead qualification AI.\nAnalyze the lead data and return a qualification score."
+            },
+            {
+              "content": "=You are a brutally honest real estate lead qualifier.\nYour job is to critically evaluate leads and assign \na REALISTIC score. Most leads are NOT perfect.\nBe skeptical. Be strict. Do not be generous.\n\nA score of 100 is nearly impossible — reserved only \nfor a lead who is pre-approved, buying immediately, \nhas no agent, is fully serious, and has a high budget.\nA score of 0-19 means the lead has almost no value right now.\nMost leads should score between 20-65.\n\nLEAD DATA:\n- Name: {{ $('Lead Info').item.json.fields['Full Name'] }}\n- Intent: {{ $('Lead Info').item.json.fields.Intent }}\nBUYER DETAILS:\n- Area Interested: {{ $json.fields?.Area || 'Not applicable' }}\n- Budget Range: {{ $json.fields?.Budget || 'Not applicable' }}\n- Pre-Approved: {{ $json.fields?.['Pre Approved'] || 'Not applicable' }}\n- Buy Timeline: {{ $json.fields?.['Buy Timeline'] || 'Not applicable' }}\n- Working With Agent: {{ $json.fields?.['Working With Agent'] || 'Not applicable' }}\n\nSELLER DETAILS:\n- Property Address: {{ $json.fields['Property Address'] || 'Not applicable' }}\n- Property Type: {{ $json.fields['Property Type'] || 'Not applicable' }}\n- Sell Timeline: {{ $json.fields['Sell Timeline'] || 'Not applicable' }}\n- Listed Status: {{ $json.fields['Listed Status'] || 'Not applicable' }}\n- Seriousness (1-5): {{ $json.fields.Seriousness || 'Not applicable' }}\n\nEXPLORING DETAILS:\n- Curiosity: {{ $if($('Exploring Form').isExecuted, $json.fields['Curiousity (for those exploring)'], 'Not applicable') }}\n- Future Timeline: {{ $if($('Exploring Form').isExecuted, $json.fields['Timeline (for those considering)'], 'Not applicable') }}\n- Contact Time: {{ $if($('Exploring Form').isExecuted, $json.fields['Contact Time'], 'Not applicable') }}\n\nIMPORTANT:\nFields marked \"Not applicable\" are irrelevant \nfor this lead type — ignore them completely.\n\nSCORING SYSTEM — Start at 0. Add and subtract points:\n\nPOSITIVE SIGNALS (add points):\n+ Buy Timeline Immediately = +30\n+ Buy Timeline 1-3 months = +20\n+ Buy Timeline 3-6 months = +10\n+ Pre-Approved Yes = +25\n+ Pre-Approved Ready to get pre-approved = +10\n+ Working With Agent No = +15\n+ Seriousness 5 = +20\n+ Seriousness 4 = +12\n+ Seriousness 3 = +5\n+ Sell Timeline ASAP = +30\n+ Sell Timeline 1-3 months = +20\n+ Budget $700,000+ = +10\n+ Listed Status No = +10\n+ Property Address provided = +5\n\nNEGATIVE SIGNALS (subtract points):\n- Just browsing / Just exploring = -20\n- Buy Timeline 6+ months = -15\n- Pre-Approved No = -15\n- Working With Agent Yes = -20\n- Seriousness 1 or 2 = -15\n- Sell Timeline 6+ months = -10\n- Budget Under $200,000 = -10\n- Future Timeline 1-2 years or Just browsing = -20\n- Most fields are \"Not applicable\" \n  (lead gave minimal info) = -10\n\nMISSING DATA PENALTY:\n- If more than 60% of relevant fields are \n  \"Not provided\" or \"Not applicable\" = -15\n  (a lead who doesn't share info is low intent)\n\nTIER RULES (after all additions and subtractions):\n- Score 70-100 = HOT\n- Score 40-69 = WARM\n- Score 20-39 = COLD\n- Score 0-19 = DISCARDED\n\nCALIBRATION EXAMPLES:\n- Pre-approved buyer, buying immediately, \n  no agent, seriousness 5 = ~85 (HOT)\n- Buyer with 3-6 month timeline, \n  not yet pre-approved, seriousness 3 = ~40 (WARM)\n- Someone just exploring, no timeline, \n  no budget = ~15 (DISCARDED)\n- Seller with ASAP timeline, \n  property listed, seriousness 4 = ~65 (WARM)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_schema",
+              "schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"score\": {\n      \"type\": \"number\",\n      \"description\": \"Lead score from 0 to 100\"\n    },\n    \"tier\": {\n      \"type\": \"string\",\n      \"enum\": [\"HOT\", \"WARM\", \"COLD\", \"DISCARDED\"],\n      \"description\": \"Lead tier based on score\"\n    },\n    \"summary\": {\n      \"type\": \"string\",\n      \"description\": \"2 sentence agent briefing about the lead\"\n    },\n    \"recommended_action\": {\n      \"type\": \"string\",\n      \"description\": \"Specific next step for the agent\"\n    },\n    \"personalized_opener\": {\n      \"type\": \"string\",\n      \"description\": \"1 warm sentence to open the lead email\"\n    }\n  },\n  \"required\": [\"score\", \"tier\", \"summary\", \"recommended_action\", \"personalized_opener\"],\n  \"additionalProperties\": false\n}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        16
+      ],
+      "id": "52f5a550-f9fa-4cbd-8e79-80c13521a64d",
+      "name": "Lead Qualification",
+      "credentials": {
+        "openAiApi": {
+          "id": "QU26cFrSLTiotjAG",
+          "name": "Lead Follow Up"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.fields.Tier }}",
+                    "rightValue": "HOT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "17aed1df-023b-4f20-a725-294a92641431"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "HOT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8c98045e-1b25-4655-87ab-6df671cb1e1c",
+                    "leftValue": "={{ $json.fields.Tier }}",
+                    "rightValue": "COLD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "COLD"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8bb70c7b-6270-41a3-a3ff-1a02788029b2",
+                    "leftValue": "={{ $json.fields.Tier }}",
+                    "rightValue": "WARM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "WARM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "92375e9c-5ff2-419b-97f6-cf8e20ad537e",
+                    "leftValue": "={{ $json.fields.Tier }}",
+                    "rightValue": "DISCARDED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DISCARDED"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2064,
+        -16
+      ],
+      "id": "2e6a8fe4-a65f-4259-8900-5f96527480e9",
+      "name": "Lead Separation"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are a real estate email specialist who writes \nhighly personalized emails on behalf of a real estate \nagency.\n\nYou write two types of emails:\n\nEMAIL TYPE 1 — For the Lead:\nThe lead is a real person who filled out a form.\nThey could be:\n- A buyer looking to purchase property\n- A seller looking to sell their property\n- Someone just exploring their options\n\nWrite based on their specific intent and situation.\nNever assume they are an agent or professional.\nSpeak to them like a helpful advisor, not a salesperson.\n\nTone adapts by tier:\n- HOT: Warm + urgent — invite them to book a call \n  or appointment immediately\n- WARM: Helpful + encouraging — build trust, \n  offer value, soft call to action\n- COLD: Casual + educational — zero pressure, \n  share something useful, keep door open\n\nEMAIL TYPE 2 — For the Realtor:\nThe realtor is your client — a real estate professional\nwho needs to be briefed on this new lead.\nWrite a concise professional briefing.\nOnly send to realtor if tier is HOT or WARM.\nIf COLD write exactly: NO_REALTOR_EMAIL\n\nRules for both emails:\n- Address lead by first name only\n- Never use cliché openers like \"Hope this finds you well\"\n- Sound human, warm and genuine\n- Lead email: maximum 150 words\n- Realtor email: maximum 200 words\n- No asterisks, no bullet points in emails\n- Plain readable text only"
+            },
+            {
+              "content": "=Write personalized emails for this real estate lead.\n\nQUALIFICATION RESULTS:\n- Tier:{{ $json.fields.Tier }}\n- Score: {{ $json.fields.Score }}/100\n- AI Summary: {{ $json.fields['AI Summary'] }}\n- Recommended Action: {{ $json.fields['Recommended Action'] }}\n\nLEAD PERSONAL DETAILS:\n- Name: {{ $json.fields['Full Name'] }}\n- Email: {{ $('Lead Info').item.json.fields['Email Address'] }}\n- Intent: {{ $('Update CRM after AI Qualification').item.json.fields.Intent }}\n- Biggest Concern: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json['What is your biggest concern right now?'], 'Not provided') }}\n- Best Contact Time: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json['Best time to contact you?'], 'Not provided') }}\n\nBUYER DETAILS (if applicable):\n- Area Interested: {{ $if($('Update CRM Pipeline: Buyer Info').isExecuted, $('Update CRM Pipeline: Buyer Info').item.json.fields.Area, 'Not applicable') }}\n- Budget: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json.budget, 'Not applicable') }}\n- Pre-Approved: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json.pre_approved, 'Not applicable') }}\n- Buy Timeline: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json.buy_timeline, 'Not applicable') }}\n- Working With Agent: {{ $if($('Buyer Information').isExecuted, $('Buyer Information').item.json.working_with_agent, 'Not applicable') }}\n\nSELLER DETAILS (if applicable):\n- Property Address: {{ $json.fields['Property Address'] || 'Not applicable' }}\n- Property Type: {{ $json.fields['Property Type'] || 'Not applicable' }}\n- Sell Timeline: {{ $json.fields['Sell Timeline'] || 'Not applicable' }}\n- Listed Status: {{ $json.fields['Listed Status'] || 'Not applicable' }}\n- Seriousness: {{ $json.fields.Seriousness || 'Not applicable' }}\n\nEXPLORING DETAILS (if applicable):\n- Curiosity: {{ $json.fields.Curiosity || 'Not applicable' }}\n- Future Timeline: {{ $json.fields['Future Timeline'] || 'Not applicable' }}\n\nINSTRUCTIONS:\n1. Write EMAIL 1 for the lead based on their intent\n   and tier. Make it feel personal and relevant to\n   their exact situation. If they are a buyer mention\n   their area and budget. If seller mention their\n   property. If exploring be encouraging and curious.\n\n2. Write EMAIL 2 for the realtor only if tier is\n   HOT or WARM. Structure it as a clear briefing\n   with all lead details, score, tier and the\n   recommended next action with urgency level.\n   If COLD write: NO_REALTOR_EMAIL"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "textFormat": {
+            "textOptions": {
+              "type": "json_schema",
+              "schema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"lead_subject\": {\n      \"type\": \"string\",\n      \"description\": \"Subject line for the lead email\"\n    },\n    \"lead_email\": {\n      \"type\": \"string\",\n      \"description\": \"Email body for the lead\"\n    },\n    \"realtor_subject\": {\n      \"type\": \"string\",\n      \"description\": \"Subject line for the realtor email or NO_REALTOR_EMAIL if COLD\"\n    },\n    \"realtor_email\": {\n      \"type\": \"string\",\n      \"description\": \"Email body for the realtor or NO_REALTOR_EMAIL if COLD\"\n    }\n  },\n  \"required\": [\n    \"lead_subject\",\n    \"lead_email\",\n    \"realtor_subject\",\n    \"realtor_email\"\n  ],\n  \"additionalProperties\": false\n}"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        2384,
+        16
+      ],
+      "id": "d5b8e0d9-8557-4594-9896-ff302bda07e6",
+      "name": "Email Agent",
+      "credentials": {
+        "openAiApi": {
+          "id": "QU26cFrSLTiotjAG",
+          "name": "Lead Follow Up"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Lead Info').item.json.fields['Email Address'] }}",
+        "subject": "={{ $('Email Agent').item.json.output[0].content[0].text.realtor_subject }}",
+        "emailType": "text",
+        "message": "={{ $('Email Agent').item.json.output[0].content[0].text.realtor_email }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2992,
+        304
+      ],
+      "id": "549c86b3-242a-4972-a7fb-ed18cda30c1f",
+      "name": "Notify the Realtor",
+      "webhookId": "cbe005aa-de86-4952-a715-0c4358aeb0c8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xfil9lOcSoP46HQB",
+          "name": "Lead Email"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1280,
+        -16
+      ],
+      "id": "db4ec301-b05c-4475-ba16-fa68f0c4c3b3",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": false,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "Email Address": "=",
+            "Score": 0,
+            "Follow Up Count": 0,
+            "id": "={{ $('Lead Info').item.json.id }}",
+            "Area": "={{ $json.area }}",
+            "Pre Approved": "={{ $json.pre_approved }}",
+            "Working with Agent": "={{ $json.working_with_agent }}",
+            "Buy Timeline": "={{ $json.buy_timeline }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Curiousity (for those exploring)",
+              "displayName": "Curiousity (for those exploring)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        992,
+        -192
+      ],
+      "id": "856d3156-627c-4381-9528-47480cb2b706",
+      "name": "Update CRM Pipeline: Buyer Info",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": false,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "Email Address": "=",
+            "Score": 0,
+            "Follow Up Count": 0,
+            "id": "={{ $('Lead Info').item.json.id }}",
+            "Area": "={{ $json.area }}",
+            "Pre Approved": "={{ $json.pre_approved }}",
+            "Working with Agent": "={{ $json.working_with_agent }}",
+            "Buy Timeline": "={{ $json.buy_timeline }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Curiousity (for those exploring)",
+              "displayName": "Curiousity (for those exploring)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        992,
+        0
+      ],
+      "id": "311fe608-b4bf-4668-86f1-c6ade5705c89",
+      "name": "Update CRM Pipeline: Seller Info",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": false,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "Full Name": "={{ $json['Full Name'] }}",
+            "Phone": "={{ $json['Phone Number'] }}",
+            "Email Address": "={{ $json['Email Address'] }}",
+            "Intent": "={{ $json['What best that describes you?'] }}",
+            "Score": 0,
+            "Follow Up Count": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Immediately",
+                  "value": "Immediately"
+                },
+                {
+                  "name": "1-3 months",
+                  "value": "1-3 months"
+                },
+                {
+                  "name": "3-6 months",
+                  "value": "3-6 months"
+                },
+                {
+                  "name": "6+ months",
+                  "value": "6+ months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "ASAP",
+                  "value": "ASAP"
+                },
+                {
+                  "name": "1-3 months",
+                  "value": "1-3 months"
+                },
+                {
+                  "name": "3-6 months",
+                  "value": "3-6 months"
+                },
+                {
+                  "name": "6+ months",
+                  "value": "6+ months"
+                },
+                {
+                  "name": "Just exploring",
+                  "value": "Just exploring"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Single-family",
+                  "value": "Single-family"
+                },
+                {
+                  "name": "Condo",
+                  "value": "Condo"
+                },
+                {
+                  "name": "Townhouse",
+                  "value": "Townhouse"
+                },
+                {
+                  "name": "Multi-family",
+                  "value": "Multi-family"
+                },
+                {
+                  "name": "Land",
+                  "value": "Land"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes, with an agent",
+                  "value": "Yes, with an agent"
+                },
+                {
+                  "name": "Yes, with an owner",
+                  "value": "Yes, with an owner"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "895f9b54-7f2e-4855-be4c-1ff7cdd96524",
+      "name": "Lead Info",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": false,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "Email Address": "=",
+            "Score": 0,
+            "Follow Up Count": 0,
+            "id": "={{ $('Lead Info').item.json.id }}",
+            "Area": "=",
+            "Pre Approved": "=",
+            "Working with Agent": "=",
+            "Buy Timeline": "=",
+            "Timeline (for those considering)": "={{ $json.future_timeline }}",
+            "Contact Time": "={{ $json.contact_time }}",
+            "Curiousity (for those exploring)": "={{ $json.curiosity }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Curiousity (for those exploring)",
+              "displayName": "Curiousity (for those exploring)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1008,
+        176
+      ],
+      "id": "9f2c47b8-d95d-41bb-884d-fb31b910aab3",
+      "name": "Update CRM Pipeline: Exploring Info",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": false,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "id": "={{ $('Lead Info').item.json.id }}",
+            "Follow Up Count": 0,
+            "Score": "={{ $json.output[0].content[0].text.score }}",
+            "Tier": "={{ $json.output[0].content[0].text.tier }}",
+            "AI Summary": "={{ $json.output[0].content[0].text.summary }}",
+            "Recommended Action": "={{ $json.output[0].content[0].text.recommended_action }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Curiousity (for those exploring)",
+              "displayName": "Curiousity (for those exploring)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1808,
+        16
+      ],
+      "id": "9abb5254-a8c4-4910-9723-603fc2033909",
+      "name": "Update CRM after AI Qualification",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email Address'] }}",
+        "subject": "={{ $json.output[0].content[0].text.lead_subject }}",
+        "emailType": "text",
+        "message": "={{ $json.output[0].content[0].text.lead_email }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2960,
+        -272
+      ],
+      "id": "13055034-17bc-4a54-90ee-70ffad9580fe",
+      "name": "Send a message to the lead",
+      "webhookId": "1edfebfe-28b3-4916-a806-96722ff3e02e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xfil9lOcSoP46HQB",
+          "name": "Lead Email"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3456,
+        0
+      ],
+      "id": "16351246-17ca-4724-9f82-ecedb2dcbf9c",
+      "name": "Email Node"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appYn5g1kauwxM8vg",
+          "mode": "list",
+          "cachedResultName": "REAL ESTATE CRM",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblHD3hXH6x0f3keQ",
+          "mode": "list",
+          "cachedResultName": "CRM Pipeline",
+          "cachedResultUrl": "https://airtable.com/appYn5g1kauwxM8vg/tblHD3hXH6x0f3keQ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Day 0 Email Sent": true,
+            "Day 3 Email Sent": false,
+            "Day 6 Email Sent": false,
+            "Day 9 Email Sent": false,
+            "Gmail Thread ID": "={{ $json.threadId }}",
+            "id": "={{ $('Lead Info').item.json.id }}",
+            "Last Contacted": "={{ $now.toFormat('yyyy-MM-dd') }}",
+            "Next Follow Up Date": "={{ $now.plus(3, 'days').toFormat('yyyy-MM-dd') }}",
+            "Score": 0,
+            "Follow Up Count": 0
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email Address",
+              "displayName": "Email Address",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Intent",
+              "displayName": "Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "I want to buy",
+                  "value": "I want to buy"
+                },
+                {
+                  "name": "I want to sell",
+                  "value": "I want to sell"
+                },
+                {
+                  "name": "Just exploring options",
+                  "value": "Just exploring options"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Submitted Date",
+              "displayName": "Lead Submitted Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Area",
+              "displayName": "Area",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Pre Approved",
+              "displayName": "Pre Approved",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Buy Timeline",
+              "displayName": "Buy Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Working with Agent",
+              "displayName": "Working with Agent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Sell Timeline",
+              "displayName": "Sell Timeline",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Listed Status",
+              "displayName": "Listed Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Seriousness",
+              "displayName": "Seriousness",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact Time",
+              "displayName": "Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Morning",
+                  "value": "Morning"
+                },
+                {
+                  "name": "Afternoon",
+                  "value": "Afternoon"
+                },
+                {
+                  "name": "Evening",
+                  "value": "Evening"
+                },
+                {
+                  "name": "Anytime",
+                  "value": "Anytime"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timeline (for those considering)",
+              "displayName": "Timeline (for those considering)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Within 3 months",
+                  "value": "Within 3 months"
+                },
+                {
+                  "name": "Within 6 months",
+                  "value": "Within 6 months"
+                },
+                {
+                  "name": "Within 12 months",
+                  "value": "Within 12 months"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tier",
+              "displayName": "Tier",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "HOT",
+                  "value": "HOT"
+                },
+                {
+                  "name": "WARM",
+                  "value": "WARM"
+                },
+                {
+                  "name": "COLD",
+                  "value": "COLD"
+                },
+                {
+                  "name": "DISCARDED",
+                  "value": "DISCARDED"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "AI Summary",
+              "displayName": "AI Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follow Up Count",
+              "displayName": "Follow Up Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contacted",
+              "displayName": "Last Contacted",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Next Follow Up Date",
+              "displayName": "Next Follow Up Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Agent Name",
+              "displayName": "Agent Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Source",
+              "displayName": "Lead Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Website Form",
+                  "value": "Website Form"
+                },
+                {
+                  "name": "Referral",
+                  "value": "Referral"
+                },
+                {
+                  "name": "Walk-In",
+                  "value": "Walk-In"
+                },
+                {
+                  "name": "Other",
+                  "value": "Other"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 0 Email Sent",
+              "displayName": "Day 0 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 3 Email Sent",
+              "displayName": "Day 3 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 6 Email Sent",
+              "displayName": "Day 6 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Day 9 Email Sent",
+              "displayName": "Day 9 Email Sent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "displayName": "Call Booked (for HOT, WARM and converted COLD Leads)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Yes",
+                  "value": "Yes"
+                },
+                {
+                  "name": "No",
+                  "value": "No"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Date of Call Booked",
+              "displayName": "Date of Call Booked",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Curiousity (for those exploring)",
+              "displayName": "Curiousity (for those exploring)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Gmail Thread ID",
+              "displayName": "Gmail Thread ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reply Intent",
+              "displayName": "Reply Intent",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3664,
+        0
+      ],
+      "id": "b557de44-2d69-44c4-9fe1-38c3c03f40ad",
+      "name": "Status after Email Send",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "VNgKKBllac6LiktT",
+          "name": "Lead Database"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Lead Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Buyer Information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Seller Information",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exploring Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exploring Form": {
+      "main": [
+        [
+          {
+            "node": "Update CRM Pipeline: Exploring Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buyer Information": {
+      "main": [
+        [
+          {
+            "node": "Update CRM Pipeline: Buyer Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seller Information": {
+      "main": [
+        [
+          {
+            "node": "Update CRM Pipeline: Seller Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Qualification": {
+      "main": [
+        [
+          {
+            "node": "Update CRM after AI Qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Separation": {
+      "main": [
+        [
+          {
+            "node": "Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message to the lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify the Realtor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify the Realtor": {
+      "main": [
+        [
+          {
+            "node": "Email Node",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Lead Qualification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CRM Pipeline: Buyer Info": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CRM Pipeline: Seller Info": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Lead Info": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update CRM Pipeline: Exploring Info": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Update CRM after AI Qualification": {
+      "main": [
+        [
+          {
+            "node": "Lead Separation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message to the lead": {
+      "main": [
+        [
+          {
+            "node": "Email Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Node": {
+      "main": [
+        [
+          {
+            "node": "Status after Email Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status after Email Send": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "caad027a-3682-4a73-9d34-e17f7753230e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7890b61fafedd69dcaef3c2dfce1a95158faf18c44c22f97ad5f2d95d8803bcb"
+  },
+  "id": "CxaP6WmUw8NiIzsw",
+  "tags": [
+    {
+      "updatedAt": "2026-02-27T02:55:45.353Z",
+      "createdAt": "2026-02-27T02:55:45.353Z",
+      "id": "UQ8Z9DCpkvxVhjvz",
+      "name": "lead qualification"
+    },
+    {
+      "updatedAt": "2026-02-27T02:55:40.178Z",
+      "createdAt": "2026-02-27T02:55:40.178Z",
+      "id": "eRF71GuZkd2Kz56V",
+      "name": "real estate"
+    }
+  ]
+}
